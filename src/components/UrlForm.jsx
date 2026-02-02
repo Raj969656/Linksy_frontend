@@ -11,12 +11,16 @@ export default function UrlForm() {
   async function submit() {
     setError("");
     try {
-      const res = await API.post("/", {
+      // ✅ CORRECT ENDPOINT
+      const res = await API.post("/url", {
         url,
         customAlias: alias || undefined,
       });
 
-      setShortUrl(`http://localhost:8001/url/${res.data.shortId}`);
+      // ✅ PRODUCTION SAFE SHORT URL
+      const backendBase = "https://url-shortner-backend-x55x.onrender.com";
+
+      setShortUrl(`${backendBase}/url/${res.data.shortId}`);
     } catch (err) {
       setError(err.response?.data?.error || "Something went wrong");
     }
@@ -56,7 +60,7 @@ export default function UrlForm() {
           <span className="text-indigo-600 truncate">{shortUrl}</span>
 
           <div className="flex gap-3">
-            <a href={shortUrl} target="_blank">
+            <a href={shortUrl} target="_blank" rel="noreferrer">
               <FiExternalLink />
             </a>
             <button onClick={() => navigator.clipboard.writeText(shortUrl)}>
