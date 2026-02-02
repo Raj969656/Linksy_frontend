@@ -2,29 +2,36 @@ import { useState } from "react";
 import API from "../services/api";
 import { FiExternalLink, FiCopy } from "react-icons/fi";
 
+const DISPLAY_DOMAIN = "ls.ly"; // 👈 FAKE SHORT DOMAIN (UI ONLY)
+const BACKEND_DOMAIN = "https://url-shortner-backend-x55x.onrender.com";
+
 export default function UrlForm() {
   const [url, setUrl] = useState("");
   const [alias, setAlias] = useState("");
-  const [shortUrl, setShortUrl] = useState("");
+  const [shortId, setShortId] = useState("");
   const [error, setError] = useState("");
 
   async function submit() {
     setError("");
     try {
-      // ✅ CORRECT ENDPOINT
       const res = await API.post("/url", {
         url,
         customAlias: alias || undefined,
       });
 
-      // ✅ PRODUCTION SAFE SHORT URL
-      const backendBase = "https://url-shortner-backend-x55x.onrender.com";
-
-      setShortUrl(`${backendBase}/url/${res.data.shortId}`);
+      setShortId(res.data.shortId);
     } catch (err) {
       setError(err.response?.data?.error || "Something went wrong");
     }
   }
+
+  const realUrl = shortId
+    ? `${BACKEND_DOMAIN}/url/${shortId}`
+    : "";
+
+  const displayUrl = shortId
+    ? `${DISPLAY_DOMAIN}/${shortId}`
+    : "";
 
   return (
     <div className="bg-white p-6 rounded-xl shadow">
@@ -55,15 +62,24 @@ export default function UrlForm() {
         <p className="text-red-500 text-sm mt-3">{error}</p>
       )}
 
-      {shortUrl && (
+      {shortId && (
         <div className="mt-4 flex justify-between items-center bg-gray-100 p-3 rounded">
-          <span className="text-indigo-600 truncate">{shortUrl}</span>
+          {/* 👇 USER SEEN SHORT URL */}
+          <span className="text-indigo-600 truncate">
+            {displayUrl}
+          </span>
 
           <div className="flex gap-3">
-            <a href={shortUrl} target="_blank" rel="noreferrer">
+            {/* 👇 REAL BACKEND URL OPENS */}
+            <a href={realUrl} target="_blank" rel="noreferrer">
               <FiExternalLink />
             </a>
-            <button onClick={() => navigator.clipboard.writeText(shortUrl)}>
+
+            {/* 👇 COPY REAL URL (BEST PRACTICE) */}
+            <button
+              onClick={() => navigator.clipboard.writeText(realUrl)}
+              title="Copy real link"
+            >
               <FiCopy />
             </button>
           </div>
