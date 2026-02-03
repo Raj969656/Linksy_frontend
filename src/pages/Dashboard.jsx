@@ -1,49 +1,65 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
-import QRCode from "qrcode.react";
-
-const DISPLAY_DOMAIN = "ls.ly";
-const BACKEND_DOMAIN = "https://url-shortner-backend-x55x.onrender.com";
+import QRCode from "react-qr-code";
 
 export default function Dashboard() {
   const [urls, setUrls] = useState([]);
 
- useEffect(() => {
-  API.get("/url/user/urls")   
-    .then((res) => setUrls(res.data))
-    .catch(console.error);
-}, []);
+  const BACKEND = "https://url-shortner-backend-x55x.onrender.com";
+  const DISPLAY = "ls.ly";
 
+  useEffect(() => {
+    API.get("/url/user/urls")
+      .then((res) => setUrls(res.data))
+      .catch(console.error);
+  }, []);
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Your Links</h1>
+    <div className="p-6 max-w-5xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
-      {urls.length === 0 && <p>No links yet.</p>}
+      {urls.length === 0 && (
+        <p className="text-gray-500">No links created yet.</p>
+      )}
 
-      {urls.map((u) => {
-        const displayUrl = `${DISPLAY_DOMAIN}/${u.shortId}`;
-        const realUrl = `${BACKEND_DOMAIN}/url/${u.shortId}`;
+      <div className="space-y-6">
+        {urls.map((u) => {
+          const realUrl = `${BACKEND}/url/${u.shortId}`;
+          const displayUrl = `${DISPLAY}/${u.shortId}`;
 
-        return (
-          <div
-            key={u._id}
-            className="bg-white p-4 rounded shadow mb-4 flex justify-between"
-          >
-            <div>
-              <p className="font-semibold">{displayUrl}</p>
-              <p className="text-sm text-gray-500 truncate">
-                {u.redirectUrl}
-              </p>
-              <p className="text-xs text-gray-400">
-                Clicks: {u.visitHistory.length}
-              </p>
+          return (
+            <div
+              key={u._id}
+              className="bg-white p-5 rounded-xl shadow flex justify-between items-center"
+            >
+              <div>
+                <p className="font-semibold text-indigo-600">
+                  {displayUrl}
+                </p>
+                <p className="text-sm text-gray-500 break-all">
+                  {u.redirectUrl}
+                </p>
+                <p className="text-sm mt-1">
+                  Clicks:{" "}
+                  <span className="font-semibold">
+                    {u.visitHistory.length}
+                  </span>
+                </p>
+
+                <a
+                  href={realUrl}
+                  target="_blank"
+                  className="text-indigo-600 text-sm underline"
+                >
+                  Open →
+                </a>
+              </div>
+
+              <QRCode value={realUrl} size={80} />
             </div>
-
-            <QRCode value={realUrl} size={64} />
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
