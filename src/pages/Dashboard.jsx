@@ -8,11 +8,12 @@ const BACKEND_DOMAIN = "https://url-shortner-backend-x55x.onrender.com";
 export default function Dashboard() {
   const [urls, setUrls] = useState([]);
 
-  useEffect(() => {
-    API.get("/url/user/urls").then((res) => {
-      setUrls(res.data);
-    });
-  }, []);
+ useEffect(() => {
+  API.get("/url/user/urls")   
+    .then((res) => setUrls(res.data))
+    .catch(console.error);
+}, []);
+
 
   return (
     <div className="max-w-5xl mx-auto p-6">
