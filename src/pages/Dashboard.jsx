@@ -1,51 +1,48 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
-import UrlForm from "../components/UrlForm";
-import UrlCard from "../components/UrlCard";
+import QRCode from "qrcode.react";
+
+const DISPLAY_DOMAIN = "ls.ly";
+const BACKEND_DOMAIN = "https://url-shortner-backend-x55x.onrender.com";
 
 export default function Dashboard() {
   const [urls, setUrls] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  async function loadData() {
-    try {
-      const res = await API.get("/user/urls");
-      setUrls(res.data.urls || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   useEffect(() => {
-    loadData();
+    API.get("/url/user/urls").then((res) => {
+      setUrls(res.data);
+    });
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-10">
-      <div className="max-w-6xl mx-auto">
+    <div className="max-w-5xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">Your Links</h1>
 
-        <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      {urls.length === 0 && <p>No links yet.</p>}
 
-        {/* URL SHORTENER */}
-        <div className="mb-8">
-          <UrlForm />
-        </div>
+      {urls.map((u) => {
+        const displayUrl = `${DISPLAY_DOMAIN}/${u.shortId}`;
+        const realUrl = `${BACKEND_DOMAIN}/url/${u.shortId}`;
 
-        {/* LINKS */}
-        {loading ? (
-          <p className="text-gray-500">Loading links...</p>
-        ) : urls.length === 0 ? (
-          <p className="text-gray-500">No links created yet.</p>
-        ) : (
-          <div className="space-y-4">
-            {urls.map((u) => (
-              <UrlCard key={u._id} data={u} />
-            ))}
+        return (
+          <div
+            key={u._id}
+            className="bg-white p-4 rounded shadow mb-4 flex justify-between"
+          >
+            <div>
+              <p className="font-semibold">{displayUrl}</p>
+              <p className="text-sm text-gray-500 truncate">
+                {u.redirectUrl}
+              </p>
+              <p className="text-xs text-gray-400">
+                Clicks: {u.visitHistory.length}
+              </p>
+            </div>
+
+            <QRCode value={realUrl} size={64} />
           </div>
-        )}
-      </div>
+        );
+      })}
     </div>
   );
 }
