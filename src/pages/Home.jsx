@@ -5,8 +5,6 @@ import { motion } from "framer-motion";
 export default function Home() {
   return (
     <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-indigo-100">
-
-      {/* HERO SECTION */}
       <section
         id="home"
         className="min-h-screen flex items-center justify-center text-center px-6"
@@ -44,17 +42,13 @@ export default function Home() {
           </SignedOut>
         </motion.div>
       </section>
-
-      {/* ABOUT */}
-      <Section id="about" title="Why LinkSnap?">
+      <Section id="about" title="Why LinkSy?">
         <p>
-          Long URLs look messy and are hard to share. LinkSnap helps you create
+          Long URLs look messy and are hard to share. LinkSy helps you create
           clean, short, and reliable links instantly — with optional analytics
           and dashboard access.
         </p>
       </Section>
-
-      {/* FEATURES */}
       <section
         id="features"
         className="max-w-6xl mx-auto px-6 py-24 grid grid-cols-1 md:grid-cols-3 gap-8"
@@ -72,8 +66,6 @@ export default function Home() {
           text="Authentication powered by Clerk with modern security."
         />
       </section>
-
-      {/* HOW IT WORKS */}
       <Section id="how" title="How It Works">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
           <Step number="1" text="Paste your long URL" />
@@ -81,35 +73,25 @@ export default function Home() {
           <Step number="3" text="Login to track analytics & manage links" />
         </div>
       </Section>
-
-      {/* PRICING */}
       <Section id="pricing" title="Pricing">
         <p>
           Free for everyone. Premium features like custom domains and advanced
           analytics are coming soon 🚀
         </p>
       </Section>
-
-      {/* CONTACT */}
       <Section id="contact" title="Contact">
         <p>
           Questions or feedback?
           <br />
-          📧 support@linksnap.app
+          📧 support@linksy.app
         </p>
       </Section>
-
-      {/* FOOTER */}
       <footer className="text-center py-10 text-gray-500 text-sm">
-        © {new Date().getFullYear()} LinkSnap. All rights reserved.
+        © {new Date().getFullYear()} LinkSy. All rights reserved.
       </footer>
     </div>
   );
 }
-
-/* =========================
-   REUSABLE COMPONENTS
-========================= */
 
 function Section({ id, title, children }) {
   return (
@@ -122,15 +104,12 @@ function Section({ id, title, children }) {
       className="max-w-4xl mx-auto px-6 py-24 text-center"
     >
       <h2 className="text-4xl font-bold mb-6">{title}</h2>
-
-      {/* IMPORTANT: div (NOT p) */}
       <div className="text-gray-600 text-lg space-y-4">
         {children}
       </div>
     </motion.section>
   );
 }
-
 function Feature({ title, text }) {
   return (
     <motion.div
