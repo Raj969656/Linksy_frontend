@@ -27,7 +27,7 @@ export default function Navbar() {
             LS
           </div>
           <span className="text-white font-semibold text-lg hidden sm:block">
-            LinkShrink
+            LinkSy
           </span>
         </button>
 
@@ -55,7 +55,7 @@ export default function Navbar() {
             </button>
           </SignedIn>
 
-          {/* 🔥 CLERK HOSTED LOGIN */}
+        
           <SignedOut>
             <button
               onClick={() => window.Clerk.openSignIn()}
