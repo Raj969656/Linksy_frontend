@@ -2,7 +2,7 @@ import { useState } from "react";
 import API from "../services/api";
 import { FiExternalLink, FiCopy } from "react-icons/fi";
 
-const DISPLAY_DOMAIN = "ls.ly";
+const DISPLAY_DOMAIN = "https://url-shortner-backend-x55x.onrender";
 const BACKEND_DOMAIN = "https://url-shortner-backend-x55x.onrender.com";
 
 export default function UrlForm() {
