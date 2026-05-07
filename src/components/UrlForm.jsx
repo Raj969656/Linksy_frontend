@@ -2,8 +2,8 @@ import { useState } from "react";
 import API from "../services/api";
 import { FiExternalLink, FiCopy } from "react-icons/fi";
 
-const DISPLAY_DOMAIN = "https://url-shortner-backend-x55x.onrender";
-const BACKEND_DOMAIN = "https://url-shortner-backend-x55x.onrender.com";
+const DISPLAY_DOMAIN =
+  "https://url-shortner-backend-x55x.onrender.com/url";
 
 export default function UrlForm() {
   const [url, setUrl] = useState("");
@@ -13,20 +13,22 @@ export default function UrlForm() {
 
   async function submit() {
     setError("");
+
     try {
       const res = await API.post("/url", {
         url,
         customAlias: alias || undefined,
       });
+
       setShortId(res.data.shortId);
     } catch (err) {
+      console.error(err);
       setError("Failed to shorten URL");
     }
   }
 
-  const displayUrl = shortId ? `${DISPLAY_DOMAIN}/${shortId}` : "";
-  const realUrl = shortId
-    ? `${BACKEND_DOMAIN}/url/${shortId}`
+  const displayUrl = shortId
+    ? `${DISPLAY_DOMAIN}/${shortId}`
     : "";
 
   return (
@@ -52,17 +54,31 @@ export default function UrlForm() {
         Shorten
       </button>
 
-      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {error && (
+        <p className="text-red-500 mt-2">
+          {error}
+        </p>
+      )}
 
       {shortId && (
         <div className="mt-4 flex justify-between items-center bg-gray-100 p-3 rounded">
-          <span>{displayUrl}</span>
+          <span className="break-all">
+            {displayUrl}
+          </span>
+
           <div className="flex gap-3">
-            <a href={realUrl} target="_blank" rel="noreferrer">
+            <a
+              href={displayUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
               <FiExternalLink />
             </a>
+
             <button
-              onClick={() => navigator.clipboard.writeText(displayUrl)}
+              onClick={() =>
+                navigator.clipboard.writeText(displayUrl)
+              }
             >
               <FiCopy />
             </button>
