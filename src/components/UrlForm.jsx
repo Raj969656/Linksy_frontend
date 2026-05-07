@@ -10,9 +10,12 @@ export default function UrlForm() {
   const [alias, setAlias] = useState("");
   const [shortId, setShortId] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function submit() {
     setError("");
+    setShortId("");
+    setLoading(true);
 
     try {
       const res = await API.post("/url", {
@@ -24,6 +27,8 @@ export default function UrlForm() {
     } catch (err) {
       console.error(err);
       setError("Failed to shorten URL");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -37,50 +42,57 @@ export default function UrlForm() {
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         placeholder="https://example.com"
-        className="border w-full mb-2 px-4 py-2 rounded"
+        className="border w-full mb-4 px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
       />
 
       <input
         value={alias}
         onChange={(e) => setAlias(e.target.value)}
         placeholder="Custom alias (optional)"
-        className="border w-full mb-2 px-4 py-2 rounded"
+        className="border w-full mb-4 px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
       />
 
       <button
         onClick={submit}
-        className="bg-indigo-600 text-white px-6 py-2 rounded w-full"
+        disabled={loading}
+        className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg w-full flex justify-center items-center transition-all duration-300 disabled:opacity-70"
       >
-        Shorten
+        {loading ? (
+          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+        ) : (
+          "Shorten"
+        )}
       </button>
 
       {error && (
-        <p className="text-red-500 mt-2">
+        <p className="text-red-500 mt-4 text-sm">
           {error}
         </p>
       )}
 
       {shortId && (
-        <div className="mt-4 flex justify-between items-center bg-gray-100 p-3 rounded">
-          <span className="break-all">
+        <div className="mt-6 flex justify-between items-center bg-gray-100 p-4 rounded-lg">
+          <span className="break-all text-sm md:text-base">
             {displayUrl}
           </span>
 
-          <div className="flex gap-3">
+          <div className="flex gap-4 ml-4">
             <a
               href={displayUrl}
               target="_blank"
               rel="noreferrer"
+              className="text-indigo-600 hover:text-indigo-800 transition"
             >
-              <FiExternalLink />
+              <FiExternalLink size={20} />
             </a>
 
             <button
               onClick={() =>
                 navigator.clipboard.writeText(displayUrl)
               }
+              className="text-indigo-600 hover:text-indigo-800 transition"
             >
-              <FiCopy />
+              <FiCopy size={20} />
             </button>
           </div>
         </div>
